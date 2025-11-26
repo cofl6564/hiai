@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>Hi – 조직 맞춤형 HRD AI 챗봇</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="조직 데이터를 기반으로 직무·역량 분석부터 교육체계 설계, 교육용 코칭 챗봇 생성까지 지원하는 조직 맞춤형 HRD 파트너 Hi.">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=SUIT:wght@400;500;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #f4f5ff;
+      --bg-soft: #ffffff;
+      --ink: #0f172a;
+      --ink-sub: #4b5563;
+      --brand: #6366f1;
+      --brand-soft: #e0e7ff;
+      --accent: #fb7185;
+      --border: #e5e7eb;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: 'SUIT', system-ui, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+      color: var(--ink);
+      background: radial-gradient(circle at top left, #e0f2fe 0, #f4f5ff 45%, #fefce8 100%);
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* ---------- HEADER / NAV ---------- */
+    header {
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.8);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .nav-inner {
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      letter-spacing: .02em;
+    }
+
+    .logo-mark {
+      width: 30px;
+      height: 30px;
+      border-radius: 12px;
+      background: conic-gradient(from 210deg, #6366f1, #a855f7, #f97316, #22c55e, #6366f1);
+      display: inline-block;
+      box-shadow: 0 6px 18px rgba(99, 102, 241, .4);
+      position: relative;
+    }
+
+    .logo-mark::after {
+      content: "H";
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 17px;
+      font-weight: 800;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 18px;
+      align-items: center;
+      font-size: 14px;
+    }
+
+    .nav-links a.link {
+      opacity: .8;
+    }
+
+    .nav-links a.link:hover {
+      opacity: 1;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 9px 16px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: var(--brand);
+      color: #fff;
+      box-shadow: 0 8px 18px rgba(99, 102, 241, .35);
+    }
+
+    .btn-primary:hover {
+      background: #4f46e5;
+      transform: translateY(-1px);
+    }
+
+    .btn-outline {
+      background: #fff;
+      color: var(--brand);
+      border-color: var(--brand-soft);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--brand);
+      box-shadow: 0 6px 16px rgba(148, 163, 184, .3);
+      transform: translateY(-1px);
+    }
+
+    /* ---------- HERO ---------- */
+    .hero {
+      padding: 72px 0 56px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, .9fr);
+      gap: 40px;
+      align-items: center;
+    }
+
+    .eyebrow {
+      font-size: 12px;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: var(--brand);
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      font-size: 40px;
+      line-height: 1.2;
+      margin: 0 0 14px;
+    }
+
+    h1 span.highlight {
+      background: linear-gradient(90deg, #6366f1, #ec4899);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero-sub {
+      font-size: 16px;
+      color: var(--ink-sub);
+      margin-bottom: 22px;
+    }
+
+    .hero-sub b {
+      color: var(--ink);
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: #3730a3;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .pill span.dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #22c55e;
+    }
+
+    .hero-note {
+      font-size: 12px;
+      color: #6b7280;
+      margin-top: 8px;
+    }
+
+    /* 오른쪽: 귀여운 로봇 + QR 카드 */
+    .hero-card {
+      background: var(--bg-soft);
+      border-radius: 20px;
+      padding: 20px;
+      border: 1px solid var(--border);
+      box-shadow: 0 14px 34px rgba(15, 23, 42, .12);
+    }
+
+    .robot-wrap {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .robot {
+      width: 80px;
+      height: 80px;
+      border-radius: 26px;
+      background: radial-gradient(circle at 30% 20%, #ffffff, #e0f2fe 45%, #c7d2fe 100%);
+      position: relative;
+      box-shadow: 0 10px 24px rgba(148, 163, 184, .6);
+    }
+
+    .robot::before {
+      /* 안테나 */
+      content: "";
+      position: absolute;
+      top: -16px;
+      left: 50%;
+      width: 3px;
+      height: 14px;
+      transform: translateX(-50%);
+      background: #4b5563;
+      border-radius: 999px;
+    }
+
+    .robot::after {
+      /* 안테나 동그라미 */
+      content: "";
+      position: absolute;
+      top: -22px;
+      left: 50%;
+      width: 10px;
+      height: 10px;
+      transform: translateX(-50%);
+      border-radius: 50%;
+      background: #f97316;
+      box-shadow: 0 0 8px rgba(248, 113, 113, .9);
+    }
+
+    .robot-face {
+      position: absolute;
+      inset: 18px 12px 18px 12px;
+      border-radius: 18px;
+      background: #020617;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .eye {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #fefce8, #22c55e);
+      box-shadow: 0 0 10px rgba(34, 197, 94, .8);
+    }
+
+    .mouth {
+      width: 26px;
+      height: 6px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #4ade80, #a3e635);
+      box-shadow: 0 0 8px rgba(74, 222, 128, .8);
+    }
+
+    .robot-text-title {
+      font-weight: 700;
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+
+    .robot-text-sub {
+      font-size: 13px;
+      color: var(--ink-sub);
+    }
+
+    .qr-card {
+      margin-top: 16px;
+      border-radius: 14px;
+      padding: 14px;
+      background: #f9fafb;
+      border: 1px dashed var(--brand-soft);
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .qr-card img {
+      width: 120px;
+      height: 120px;
+      border-radius: 12px;
+      background: #fff;
+      padding: 6px;
+      box-shadow: 0 6px 16px rgba(148, 163, 184, .5);
+    }
+
+    .qr-text-title {
+      font-weight: 700;
+      margin-bottom: 6px;
+      font-size: 15px;
+    }
+
+    .qr-text-desc {
+      font-size: 13px;
+      color: var(--ink-sub);
+      margin-bottom: 10px;
+    }
+
+    .qr-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--brand);
+      font-weight: 600;
+    }
+
+    .qr-link span.icon {
+      font-size: 14px;
+    }
+
+    /* ---------- SECTIONS ---------- */
+    section {
+      padding: 56px 0;
+      border-top: 1px solid rgba(148, 163, 184, .35);
+      background: rgba(255,255,255,0.6);
+    }
+
+    section:nth-of-type(even) {
+      background: rgba(248,250,252,0.9);
+    }
+
+    h2 {
+      margin: 0 0 8px;
+      font-size: 26px;
+    }
+
+    .section-lead {
+      font-size: 14px;
+      color: var(--ink-sub);
+      margin-bottom: 24px;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 16px;
+    }
+
+    .feature-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 18px;
+      border: 1px solid var(--border);
+      box-shadow: 0 10px 24px rgba(15, 23, 42, .06);
+      font-size: 13px;
+    }
+
+    .feature-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    .feature-label span.emoji {
+      font-size: 18px;
+    }
+
+    .feature-card ul {
+      padding-left: 18px;
+      margin: 10px 0 0;
+      color: var(--ink-sub);
+    }
+
+    .feature-card ul li + li {
+      margin-top: 4px;
+    }
+
+    /* PROCESS */
+    .process-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0,1fr));
+      gap: 14px;
+      font-size: 13px;
+    }
+
+    .process-step {
+      background: #fff;
+      border-radius: 16px;
+      padding: 16px;
+      border: 1px solid var(--border);
+      position: relative;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, .04);
+    }
+
+    .step-num {
+      position: absolute;
+      top: -11px;
+      left: -11px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: var(--brand);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      box-shadow: 0 8px 16px rgba(129, 140, 248, .5);
+    }
+
+    .process-step b {
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    /* CTA SECTION */
+    .cta-section-inner {
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(0, .9fr);
+      gap: 24px;
+      align-items: center;
+    }
+
+    .list-check {
+      font-size: 13px;
+      color: var(--ink-sub);
+    }
+
+    .list-check li {
+      margin-bottom: 6px;
+    }
+
+    .footnote {
+      font-size: 11px;
+      color: #9ca3af;
+      margin-top: 6px;
+    }
+
+    /* 신청 폼용 */
+    form.apply-form {
+      max-width: 720px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 18px;
+      padding: 22px 20px 24px;
+      border: 1px solid var(--border);
+      box-shadow: 0 10px 24px rgba(15, 23, 42, .06);
+      font-size: 13px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px 16px;
+    }
+
+    form.apply-form label {
+      font-weight: 600;
+      font-size: 13px;
+      margin-bottom: 4px;
+      display: block;
+    }
+
+    form.apply-form input,
+    form.apply-form textarea {
+      width: 100%;
+      font: inherit;
+      padding: 9px 10px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      outline: none;
+    }
+
+    form.apply-form textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    form.apply-form .full-row {
+      grid-column: 1 / -1;
+    }
+
+    form.apply-form button {
+      grid-column: 1 / -1;
+      margin-top: 4px;
+      width: 100%;
+    }
+
+    footer {
+      padding: 30px 0 40px;
+      font-size: 12px;
+      color: #6b7280;
+      background: rgba(15,23,42,0.94);
+      color: #e5e7eb;
+    }
+
+    footer .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    footer a {
+      color: #c7d2fe;
+    }
+
+    /* ---------- RESPONSIVE ---------- */
+    @media (max-width: 900px) {
+      .hero-grid,
+      .feature-grid,
+      .process-grid,
+      .cta-section-inner,
+      form.apply-form {
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        font-size: 32px;
+      }
+
+      .hero {
+        padding-top: 56px;
+      }
+
+      .qr-card {
+        grid-template-columns: 1fr;
+      }
+
+      .nav-links {
+        gap: 8px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .nav-links .link-basic {
+        display: none; /* 모바일에서는 일부 메뉴 숨기기 */
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="container nav-inner">
+      <div class="logo-wrap">
+        <span class="logo-mark" aria-hidden="true"></span>
+        <span>Hi · HRD AI Partner</span>
+      </div>
+      <nav class="nav-links">
+        <a href="#company" class="link link-basic">회사 소개</a>
+        <a href="#features" class="link link-basic">무엇을 하나요</a>
+        <a href="#process" class="link link-basic">도입 절차</a>
+        <a href="#trial" class="link">무료 체험</a>
+        <button class="btn btn-outline" onclick="document.getElementById('apply').scrollIntoView({behavior:'smooth'});">
+          도입 신청
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <main class="hero">
+    <div class="container hero-grid">
+      <!-- 텍스트 -->
+      <div>
+        <div class="eyebrow">조직 맞춤형 HRD AI 챗봇</div>
+        <h1>
+          당신의 조직을 이해하는<br>
+          <span class="highlight">HRD 파트너 챗봇, Hi</span>
+        </h1>
+        <p class="hero-sub">
+          Hi는 조직 데이터를 기반으로 <b>직무·역량을 분석하고</b>,<br>
+          <b>교육 체계를 설계하며</b>, 바로 실행 가능한 <b>교육용 코칭 챗봇 프롬프트</b>까지 만들어주는<br>
+          올인원 HRD AI 파트너입니다.
+        </p>
+        <div class="hero-actions">
+          <button class="btn btn-primary" onclick="document.getElementById('trial').scrollIntoView({behavior:'smooth'});">
+            QR 찍고 Hi 무료 체험하기
+          </button>
+          <button class="btn btn-outline" onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'});">
+            기능 더 살펴보기
+          </button>
+        </div>
+        <div class="pill">
+          <span class="dot"></span>
+          베타 테스트 신청 기업 모집 중
+        </div>
+        <p class="hero-note">
+          중소·중견기업의 HRD 인력·예산 부족 문제를 해결하기 위해 설계된, 저비용·고효율 HRD 파트너입니다.
+        </p>
+      </div>
+
+      <!-- 로봇 + QR 카드 -->
+      <aside class="hero-card" aria-label="Hi 챗봇 무료 체험 카드">
+        <div class="robot-wrap">
+          <div class="robot" aria-hidden="true">
+            <div class="robot-face">
+              <div class="eye"></div>
+              <div class="eye"></div>
+              <div class="mouth"></div>
+            </div>
+          </div>
+          <div>
+            <div class="robot-text-title">Hi가 인사드려요 👋</div>
+            <div class="robot-text-sub">
+              “직무 분석부터 교육 코칭까지,<br>
+              HRD의 반복 업무는 제가 맡을게요!”
+            </div>
+          </div>
+        </div>
+
+        <div class="qr-card">
+          <!-- ⚠️ 여기 src에 너가 저장한 QR 이미지 파일명을 넣어줘 -->
+          <img src="hi-qr.png" alt="Hi 챗봇 무료 체험 QR 코드">
+          <div>
+            <div class="qr-text-title">📱 QR 스캔하고 Hi 무료 체험</div>
+            <div class="qr-text-desc">
+              스마트폰 카메라로 QR을 인식하면 Hi 데모 챗봇으로 바로 이동합니다.<br>
+              HRD 고민을 한 가지 적어보면, Hi가 어떻게 도와줄 수 있는지 체험해 보세요.
+            </div>
+            <!-- PC에서 보는 사람을 위한 직접 링크 -->
+            <a class="qr-link" href="https://gemini.google.com/gem/1q6PqjdiCfYpq8hFNXojTtZmFA4ex5w2p?usp=sharing" target="_blank">
+              <span class="icon">🔗</span>
+              PC에서 바로 열기
+            </a>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <!-- COMPANY INTRO -->
+  <section id="company">
+    <div class="container">
+      <h2>우리 회사는 이런 곳이에요</h2>
+      <p class="section-lead">
+        Hi(HRD + AI)는 “보고서로 끝나는 HRD 컨설팅”이 아니라, <b>실제로 돌아가는 HRD 시스템</b>을 만드는 것을 목표로 합니다.
+        HRD 전공 지식과 AI 기술을 연결해, 인력이 부족한 조직도 스스로 성장할 수 있는 환경을 만들어갑니다.
+      </p>
+
+      <div class="feature-grid">
+        <article class="feature-card">
+          <div class="feature-label">
+            <span class="emoji">🎯</span> 우리의 미션
+          </div>
+          <p>
+            복잡한 HRD를 누구나 이해하고 실행할 수 있게 단순화하는 것.
+            “HRD 전담 인력이 없어도, 우리 조직만의 성장 체계를 가질 수 있게”가 Hi의 존재 이유입니다.
+          </p>
+        </article>
+
+        <article class="feature-card">
+          <div class="feature-label">
+            <span class="emoji">🚀</span> 우리가 주로 돕는 조직
+          </div>
+          <p>
+            빠르게 성장 중이지만 HRD 조직은 작은 스타트업·중소기업, 하이브리드 근무를 도입한 기업,
+            교육체계는 있지만 실제 현장에서 잘 쓰이지 않는 조직들을 집중적으로 돕습니다.
+          </p>
+        </article>
+
+        <article class="feature-card">
+          <div class="feature-label">
+            <span class="emoji">🤝</span> 우리의 방식
+          </div>
+          <p>
+            “데이터로 진단 → HRD 관점에서 설계 → 챗봇/에이전트로 실행”의 3단계를 기본 원칙으로 삼습니다.
+            조직과 함께 설계하고, 함께 돌려보고, 함께 고쳐 나가는 방식을 지향합니다.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section id="features">
+    <div class="container">
+      <h2>Hi가 해주는 일</h2>
+      <p class="section-lead">
+        기존 HRD 컨설팅처럼 ‘보고서만 남기고 끝’이 아니라, <strong>실제로 돌릴 수 있는 교육용 코칭 챗봇까지</strong> 만들어 주는 것이 특징이에요.
+      </p>
+
+      <div class="feature-grid">
+        <article class="feature-card">
+          <div class="feature-label">
+            <span class="emoji">🧭</span> 직무·역량 자동 분석
+          </div>
+          <p>
+            조직이 보유한 직무기술서, 과업 리스트, KPI, 구성원 정보 등을 바탕으로
+            핵심 직무와 역할을 정리합니다.
+          </p>
+          <ul>
+            <li>직무 분석 &amp; 직무 명세서 정리</li>
+            <li>핵심 과업·성과지표(KPI) 구조화</li>
+            <li>역량명·정의·행동지표·필요 KSA 도출</li>
+          </ul>
+        </article>
+
+        <article class="feature-card">
+          <div class="feature-label">
+            <span class="emoji">🧩</span> 교육 체계(로드맵) 설계
+          </div>
+          <p>
+            역량 모델을 기반으로 조직·직급·역할별 교육 여정을 설계합니다.
+          </p>
+          <ul>
+            <li>직무·역량 기준 교육 경로 설계</li>
+            <li>학습 목표·추천 콘텐츠·평가 방법 제안</li>
+            <li>사례·스크립트 등 실전 학습 소재 생성</li>
+          </ul>
+        </article>
+
+        <article class="feature-card">
+          <div class="feature-label">
+            <span class="emoji">🤖</span> 교육용 코칭 챗봇 생성 프롬프트
+          </div>
+          <p>
+            설계된 교육 체계를 그대로 실행할 수 있도록,
+            <strong>실제 챗봇을 만들 수 있는 프롬프트/코드</strong>를 제공합니다.
+          </p>
+          <ul>
+            <li>24시간 개인 맞춤형 AI 코치 구현</li>
+            <li>학습자 수준·이력 기반 맞춤 피드백</li>
+            <li>조직 정책·사례를 반영한 현장밀착형 코칭</li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROCESS -->
+  <section id="process">
+    <div class="container">
+      <h2>도입 절차</h2>
+      <p class="section-lead">
+        HRD 인력이 적은 조직도 따라올 수 있도록, 4단계 프로세스로 단순하게 설계했습니다.
+      </p>
+
+      <div class="process-grid">
+        <div class="process-step">
+          <div class="step-num">01</div>
+          <b>문제 정의 &amp; 목표 합의</b>
+          <p>
+            이직, 온보딩, 리더십 등 조직이 해결하고 싶은 HRD 이슈를 정리하고
+            성공 기준(KPI)을 함께 설정합니다.
+          </p>
+        </div>
+        <div class="process-step">
+          <div class="step-num">02</div>
+          <b>데이터 수집</b>
+          <p>
+            직무 설명, 조직 구조, 성과지표, 교육 이력 등 보유 데이터를 점검합니다.
+            부족한 부분은 Hi가 질문으로 채워가며 구조화해 줍니다.
+          </p>
+        </div>
+        <div class="process-step">
+          <div class="step-num">03</div>
+          <b>분석 &amp; 설계</b>
+          <p>
+            Hi가 직무·역량 모델과 교육 체계를 자동 생성하고,
+            HRD 담당자와 함께 검토·수정합니다.
+          </p>
+        </div>
+        <div class="process-step">
+          <div class="step-num">04</div>
+          <b>코칭 챗봇 생성 &amp; 운영</b>
+          <p>
+            최종 설계 결과를 바탕으로 교육용 코칭 챗봇 프롬프트를 제공하고,
+            실제 현장에서 시범 운영 후 확장합니다.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRIAL / CTA -->
+  <section id="trial">
+    <div class="container cta-section-inner">
+      <div>
+        <h2>지금, Hi와 무료로 대화해 보세요</h2>
+        <p class="section-lead">
+          QR 코드를 찍으면 데모 환경으로 연결됩니다.<br>
+          “우리 조직의 HRD에서 가장 힘든 점”을 한 문장만 적어 보세요.
+          Hi가 어떤 분석과 제안을 해 줄 수 있는지 바로 체험할 수 있어요.
+        </p>
+        <ul class="list-check">
+          <li>✅ 별도 설치 없이, 브라우저에서 바로 사용</li>
+          <li>✅ 데모용이므로 실제 조직 데이터는 입력하지 않고 테스트 가능</li>
+          <li>✅ 창업 아이템 설명용으로도 바로 보여줄 수 있는 형태</li>
+        </ul>
+        <p class="footnote">
+          정식 버전에서는 조직 내 데이터 보안·접근권한·프라이버시를 고려한 별도 환경에 배포됩니다.
+        </p>
+        <div style="margin-top:16px; display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="btn btn-primary" onclick="document.getElementById('trial-qr').scrollIntoView({behavior:'smooth'});">
+            QR 코드 다시 보기
+          </button>
+          <a class="btn btn-outline" href="https://gemini.google.com/gem/1q6PqjdiCfYpq8hFNXojTtZmFA4ex5w2p?usp=sharing" target="_blank">
+            PC에서 데모 열기
+          </a>
+        </div>
+      </div>
+
+      <div id="trial-qr" class="qr-card" style="max-width:360px; margin-left:auto;">
+        <img src="hi-qr.png" alt="Hi 챗봇 무료 체험 QR 코드">
+        <div>
+          <div class="qr-text-title">📷 카메라 열고 QR을 비춰보세요</div>
+          <div class="qr-text-desc">
+            HRD 담당자가 아니어도 괜찮아요.<br>
+            “우리 팀 협업이 답답한 이유”처럼 고민을 던져보면,
+            Hi가 어떤 식으로 구조화해서 도와주는지 느껴볼 수 있습니다.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- APPLY FORM -->
+  <section id="apply">
+    <div class="container">
+      <h2>Hi 도입/상담 신청</h2>
+      <p class="section-lead">
+        데모를 경험해 보시고, 우리 조직에 어떻게 적용할 수 있을지 궁금하다면 아래 정보를 남겨 주세요.
+        24시간 이내에 이메일 또는 전화로 연락드려요.
+      </p>
+
+      <form class="apply-form" onsubmit="event.preventDefault(); alert('신청이 접수되었습니다! (현재는 시연용 화면이므로 실제 전송은 되지 않습니다.)');">
+        <div>
+          <label for="company">회사명</label>
+          <input id="company" type="text" placeholder="예: 인천테크" required>
+        </div>
+        <div>
+          <label for="name">담당자명</label>
+          <input id="name" type="text" placeholder="이름" required>
+        </div>
+        <div>
+          <label for="email">이메일</label>
+          <input id="email" type="email" placeholder="you@company.com" required>
+        </div>
+        <div>
+          <label for="phone">연락처</label>
+          <input id="phone" type="text" placeholder="010-0000-0000">
+        </div>
+        <div class="full-row">
+          <label for="topic">관심 영역</label>
+          <input id="topic" type="text" placeholder="예: 신입 온보딩 / 리더십 교육 / 하이브리드 협업 등">
+        </div>
+        <div class="full-row">
+          <label for="message">문의 내용</label>
+          <textarea id="message" placeholder="현재 조직의 HRD 문제, 기대하시는 효과 등을 자유롭게 적어주세요."></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">신청 내용 보내기</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container footer-inner">
+      <div>© 2025 Hi · HRD AI Partner. All rights reserved.</div>
+      <div>
+        문의: <a href="mailto:contact@hi-hrd.ai">contact@hi-hrd.ai</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
